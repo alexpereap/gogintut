@@ -1,6 +1,15 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/alexpereap/gogintut/controller"
+	"github.com/alexpereap/gogintut/service"
+	"github.com/gin-gonic/gin"
+)
+
+var (
+	videoService    service.VideoService       = service.New()
+	VideoController controller.VideoController = controller.New(videoService)
+)
 
 func main() {
 	server := gin.Default()
@@ -9,6 +18,14 @@ func main() {
 		ctx.JSON(200, gin.H{
 			"message": "OK!!",
 		})
+	})
+
+	server.GET("/videos", func(ctx *gin.Context) {
+		ctx.JSON(200, VideoController.FindAll())
+	})
+
+	server.POST("/videos", func(ctx *gin.Context) {
+		ctx.JSON(200, VideoController.Save(ctx))
 	})
 
 	server.Run(":8080")
